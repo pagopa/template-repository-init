@@ -11,15 +11,16 @@ Here is a quick overview of the files and directories included in this repositor
 ```plaintext
 .
 ├── .github/            # GitHub configuration files
-├── openapi/            # OpenAPI specification files
+├── gradle/             # Gradle wrapper files
 ├── helm/               # Helm charts for Kubernetes deployments
+├── openapi/            # OpenAPI specification files
 ├── src/                # Source code for the Java application
 │   ├── main/
 │   └── test/
 ├── build.gradle.kts    # Gradle build file
-├── settings.gradle.kts # Gradle settings file
 ├── Dockerfile          # Docker build file
 ├── README.md           # Project documentation
+├── settings.gradle.kts # Gradle settings file
 └── .gitignore          # Git ignore rules
 ```
 

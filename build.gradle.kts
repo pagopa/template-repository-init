@@ -108,15 +108,15 @@ configure<SourceSetContainer> {
 }
 
 springBoot {
-	mainClass.value("it.gov.pagopa.payhub.template.payments.java.repository.PayhubApplication")
+	mainClass.value("it.gov.pagopa.template.TemplateApplication")
 }
 
 openApiGenerate {
   generatorName.set("spring")
   inputSpec.set("$rootDir/openapi/template-payments-java-repository.openapi.yaml")
   outputDir.set("$projectDir/build/generated")
-  apiPackage.set("it.gov.pagopa.payhub.controller.generated")
-  modelPackage.set("it.gov.pagopa.payhub.model.generated")
+  apiPackage.set("it.gov.pagopa.template.controller.generated")
+  modelPackage.set("it.gov.pagopa.template.model.generated")
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
     "requestMappingMode" to "api_interface",

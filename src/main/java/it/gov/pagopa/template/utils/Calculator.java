@@ -1,4 +1,4 @@
-package utils;
+package it.gov.pagopa.template.utils;
 
 public class Calculator {
 
