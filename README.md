@@ -10,6 +10,7 @@ Here is a quick overview of the files and directories included in this repositor
 
 ```plaintext
 .
+├── .devops/            # DevOps pipelines
 ├── .github/            # GitHub configuration files
 ├── gradle/             # Gradle wrapper files
 ├── helm/               # Helm charts for Kubernetes deployments
