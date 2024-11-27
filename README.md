@@ -35,7 +35,7 @@ Here is a quick overview of the files and directories included in this repositor
 
 ### 🔧 Gradle
 - `build.gradle` file with dependencies and plugins for building, testing, and running your Java application.
-- Compatible with Java 8+.
+- Compatible with Java 21+.
 
 ### ☕ Java
 - Example Java application structure with a simple `HelloWorld` class.
