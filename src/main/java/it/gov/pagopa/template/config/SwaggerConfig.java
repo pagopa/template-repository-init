@@ -14,16 +14,22 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
   /** The title. */
-  @Value("${swagger.title:${spring.application.name}}")
-  private String title;
+  private final String title;
 
   /** The description. */
-  @Value("${swagger.description:Api and Models}")
-  private String description;
+  private final String description;
 
   /** The version. */
-  @Value("${swagger.version:${spring.application.version}}")
-  private String version;
+  private final String version;
+
+  public SwaggerConfig(
+    @Value("${swagger.title:${spring.application.name}}") String title,
+    @Value("${swagger.description:Api and Models}") String description,
+    @Value("${swagger.version:${spring.application.version}}") String version) {
+    this.title = title;
+    this.description = description;
+    this.version = version;
+  }
 
   @Bean
   public OpenAPI customOpenAPI() {
