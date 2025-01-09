@@ -37,7 +37,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion")
-  	implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
+	implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
 	implementation("io.micrometer:micrometer-registry-prometheus")
 	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	implementation("org.openapitools:jackson-databind-nullable:$openApiToolsVersion")
