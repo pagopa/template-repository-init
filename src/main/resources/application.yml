@@ -3,6 +3,9 @@ spring:
       name: ${artifactId}
       version: ${version}
     jmx.enabled: true
+    threads:
+      virtual:
+        enabled: true
 management:
     endpoint:
       health:
@@ -16,3 +19,5 @@ management:
       web:
         exposure.include: info, health
 app:
+
+
