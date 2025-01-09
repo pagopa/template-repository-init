@@ -1,7 +1,7 @@
 spring:
     application:
-      name: ${artifactId}
-      version: ${version}
+        name: ${artifactId}
+        version: ${version}
     jmx.enabled: true
     threads:
       virtual:
@@ -10,7 +10,6 @@ management:
     endpoints:
       web:
         exposure:
-          # Esponendo solo gli endpoint necessari per sicurezza
           include: health, info, prometheus, metrics
         base-path: /actuator
     endpoint:
@@ -23,15 +22,12 @@ management:
         enabled: true
     metrics:
       tags:
-        application: ${spring.application.name}
-        environment: ${spring.profiles.active:default}
-      # Prometheus
+        application: ${artifactId}
       export:
         prometheus:
           enabled: true
           step: 1m
           descriptions: true
-      # Metric type
       enable:
         jvm: true
         process: true
