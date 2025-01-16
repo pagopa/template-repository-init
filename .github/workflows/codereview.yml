@@ -65,14 +65,30 @@ jobs:
           -Dsonar.exclusions='**/enums/**, **/model/**, **/dto/**, **/*Constant*, **/*Config.java, **/*Scheduler.java, **/*Application.java, **/src/test/**, **/Dummy*.java' \
           -Dsonar.qualitygate.wait=true
 
+      # Separati gli artifact per test e coverage
       - name: Save Test Results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: |
-            build/reports/tests/
-            build/reports/jacoco/
+          name: test-reports-${{ github.run_id }}
+          path: build/reports/tests/
+          retention-days: 7
+          
+      - name: Save Coverage Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports-${{ github.run_id }}
+          path: build/reports/jacoco/
+          retention-days: 7
+
+      # Job separato per il merge degli artifact
+      - name: Merge Reports
+        if: always()
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: all-reports-${{ github.run_id }}
+          pattern: '*-reports-${{ github.run_id }}'
           retention-days: 7
 
       - name: Create Code Review Summary
@@ -80,6 +96,10 @@ jobs:
         run: |
           echo "## Code Review Summary" >> $GITHUB_STEP_SUMMARY
           echo "### Test Results Location" >> $GITHUB_STEP_SUMMARY
-          echo "Test reports are available in the artifacts section" >> $GITHUB_STEP_SUMMARY
+          echo "Test reports are available in artifact: test-reports-${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "### Coverage Results Location" >> $GITHUB_STEP_SUMMARY
+          echo "Coverage reports are available in artifact: coverage-reports-${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "### Combined Reports" >> $GITHUB_STEP_SUMMARY
+          echo "All reports are available in artifact: all-reports-${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
           echo "### Sonar Analysis" >> $GITHUB_STEP_SUMMARY
           echo "Check SonarCloud dashboard for detailed analysis" >> $GITHUB_STEP_SUMMARY
