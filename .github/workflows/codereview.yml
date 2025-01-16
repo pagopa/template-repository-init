@@ -54,6 +54,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           ./gradlew sonar \
+          --info --stacktrace --debug \
           -Dorg.gradle.jvmargs=-Xmx4096M \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.organization=${{ vars.SONARCLOUD_ORG }} \
@@ -63,7 +64,10 @@ jobs:
           -Dsonar.tests=src/test \
           -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml \
           -Dsonar.exclusions='**/enums/**, **/model/**, **/dto/**, **/*Constant*, **/*Config.java, **/*Scheduler.java, **/*Application.java, **/src/test/**, **/Dummy*.java' \
-          -Dsonar.qualitygate.wait=true
+          -Dsonar.qualitygate.wait=true \
+          -Dsonar.gradle.skipCompile=true \
+          -Dsonar.scm.provider=git \
+          -Dsonar.verbose=true
 
       # Separati gli artifact per test e coverage
       - name: Save Test Results
