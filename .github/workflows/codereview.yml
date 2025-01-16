@@ -16,13 +16,13 @@ jobs:
     name: Code Review & Quality Analysis
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -73,7 +73,7 @@ jobs:
           name: test-reports-${{ github.run_id }}
           path: build/reports/tests/
           retention-days: 7
-          
+
       - name: Save Coverage Results
         if: always()
         uses: actions/upload-artifact@v4
