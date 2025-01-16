@@ -40,36 +40,32 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-
       - name: Run Tests & Coverage
         id: tests
         run: ./gradlew clean build jacocoTestReport --info
 
-      - name: SonarCloud Analysis
-        id: sonar
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          ./gradlew sonar \
-          --info --stacktrace --debug \
-          -Dorg.gradle.jvmargs=-Xmx4096M \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.organization=${{ vars.SONARCLOUD_ORG }} \
-          -Dsonar.projectKey=${{ vars.SONARCLOUD_PROJECT_KEY }} \
-          -Dsonar.projectName="${{ vars.SONARCLOUD_PROJECT_NAME }}" \
-          -Dsonar.sources=src/main \
-          -Dsonar.tests=src/test \
-          -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml \
-          -Dsonar.exclusions='**/enums/**, **/model/**, **/dto/**, **/*Constant*, **/*Config.java, **/*Scheduler.java, **/*Application.java, **/src/test/**, **/Dummy*.java' \
-          -Dsonar.qualitygate.wait=true \
-          -Dsonar.gradle.skipCompile=true \
-          -Dsonar.scm.provider=git \
-          -Dsonar.verbose=true
+        with:
+          args: >
+            -Dsonar.organization=${{ vars.SONARCLOUD_ORG }}
+            -Dsonar.projectKey=${{ vars.SONARCLOUD_PROJECT_KEY }}
+            -Dsonar.sources=src/main
+            -Dsonar.tests=src/test
+            -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
+            -Dsonar.exclusions='**/enums/**, **/model/**, **/dto/**, **/*Constant*, **/*Config.java, **/*Scheduler.java, **/*Application.java, **/src/test/**, **/Dummy*.java'
+            -Dsonar.qualitygate.wait=true
 
-      # Separati gli artifact per test e coverage
+      - name: Generate SonarCloud Report
+        uses: particolare/sonarcloud-report-action@v1
+        with:
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          project-key: ${{ vars.SONARCLOUD_PROJECT_KEY }}
+
       - name: Save Test Results
         if: always()
         uses: actions/upload-artifact@v4
@@ -86,7 +82,6 @@ jobs:
           path: build/reports/jacoco/
           retention-days: 7
 
-      # Job separato per il merge degli artifact
       - name: Merge Reports
         if: always()
         uses: actions/upload-artifact/merge@v4
@@ -94,16 +89,3 @@ jobs:
           name: all-reports-${{ github.run_id }}
           pattern: '*-reports-${{ github.run_id }}'
           retention-days: 7
-
-      - name: Create Code Review Summary
-        if: always()
-        run: |
-          echo "## Code Review Summary" >> $GITHUB_STEP_SUMMARY
-          echo "### Test Results Location" >> $GITHUB_STEP_SUMMARY
-          echo "Test reports are available in artifact: test-reports-${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
-          echo "### Coverage Results Location" >> $GITHUB_STEP_SUMMARY
-          echo "Coverage reports are available in artifact: coverage-reports-${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
-          echo "### Combined Reports" >> $GITHUB_STEP_SUMMARY
-          echo "All reports are available in artifact: all-reports-${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
-          echo "### Sonar Analysis" >> $GITHUB_STEP_SUMMARY
-          echo "Check SonarCloud dashboard for detailed analysis" >> $GITHUB_STEP_SUMMARY
