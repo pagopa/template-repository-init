@@ -12,8 +12,11 @@ on:
       - '.**'
   workflow_dispatch:
 
-jobs:
+permissions:
+  packages: write
+  contents: read
 
+jobs:
   checkout:
     name: 🔖 Checkout Repository
     runs-on: ubuntu-22.04
@@ -30,7 +33,7 @@ jobs:
     steps:
       - name: 🚀 release + docker
         # https://github.com/pagopa/github-actions-template/releases/tag/v2.0.0
-        uses: pagopa/github-actions-template/payments-flow-release@b825ee193430395706a4a7e580b8435bdded0227
+        uses: pagopa/github-actions-template/payments-flow-release@fix-maven-package-read
         with:
           current_branch: ${{ github.ref_name }}
 
@@ -49,7 +52,7 @@ jobs:
           azure_devops_pat: ${{ secrets.AZURE_DEVOPS_TOKEN }}
           azure_template_parameters: |
             {
-              "APPS_TOP": "[p4pa-auth]",
+              "APPS_TOP": "[template]",
               "POSTMAN_BRANCH": "${{ github.ref_name }}",
-              "TRIGGER_MESSAGE": "p4pa-auth"
+              "TRIGGER_MESSAGE": "template"
             }
