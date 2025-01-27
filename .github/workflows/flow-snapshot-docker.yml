@@ -63,8 +63,6 @@ jobs:
         uses: pagopa/github-actions-template/payments-flow-docker-snapshot@fix-maven-package-read
         with:
           current_branch: ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   azure-devops-trigger:
     name: 🅰️ Azure DevOps Pipeline Trigger
