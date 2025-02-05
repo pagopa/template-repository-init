@@ -35,6 +35,7 @@ val micrometerVersion = "1.4.1"
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+  implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion")
 	implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
@@ -44,6 +45,7 @@ dependencies {
 
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
+  testAnnotationProcessor("org.projectlombok:lombok")
 
 	//	Testing
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
