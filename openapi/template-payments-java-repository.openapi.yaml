@@ -29,3 +29,18 @@ paths:
                   error:
                     type: string
                     example: "Internal Server Error"
+components:
+  schemas:
+    ErrorDTO:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          enum:
+            - BAD_REQUEST
+            - GENERIC_ERROR
+        message:
+          type: string
