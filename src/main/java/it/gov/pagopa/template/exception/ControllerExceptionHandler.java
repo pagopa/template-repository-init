@@ -14,9 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.ErrorResponse;
+import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.stream.Collectors;
 
@@ -25,18 +27,20 @@ import java.util.stream.Collectors;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ControllerExceptionHandler {
 
-  @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class})
+  @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class})
   public ResponseEntity<ErrorDTO> handleViolationException(Exception ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.CodeEnum.BAD_REQUEST);
   }
 
-  @ExceptionHandler({ServletException.class})
-  public ResponseEntity<ErrorDTO> handleServletException(ServletException ex, HttpServletRequest request) {
+  @ExceptionHandler({ServletException.class, ErrorResponseException.class})
+  public ResponseEntity<ErrorDTO> handleServletException(Exception ex, HttpServletRequest request) {
     HttpStatusCode httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     ErrorDTO.CodeEnum errorCode = ErrorDTO.CodeEnum.GENERIC_ERROR;
     if (ex instanceof ErrorResponse errorResponse) {
       httpStatus = errorResponse.getStatusCode();
-      if (httpStatus.is4xxClientError()) {
+      if(httpStatus.isSameCodeAs(HttpStatus.NOT_FOUND)) {
+        errorCode = ErrorDTO.CodeEnum.NOT_FOUND;
+      } else if (httpStatus.is4xxClientError()) {
         errorCode = ErrorDTO.CodeEnum.BAD_REQUEST;
       }
     }
@@ -64,6 +68,9 @@ public class ControllerExceptionHandler {
       getRequestDetails(request),
       httpStatus.value(),
       ex.getMessage());
+    if(log.isDebugEnabled() && ex.getCause()!=null){
+      log.debug("CausedBy: ", ex.getCause());
+    }
   }
 
   private static String buildReturnedMessage(Exception ex) {
